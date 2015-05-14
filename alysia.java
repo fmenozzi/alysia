@@ -81,20 +81,9 @@ public class alysia
     {
         public String word;
 
-        public X(String word) 
-        {
-            this.word = word;
-        }
-
-        public void print(String prefix)
-        {
-            System.out.println(prefix + this + " - " + word);
-        }
-
-        public String sentence()
-        {
-            return word;
-        }
+        public X(String word) {this.word = word;}
+        public void print(String prefix) {System.out.println(prefix + this + " - " + word);}
+        public String sentence() {return word;}
     }
 
     /*
@@ -114,10 +103,10 @@ public class alysia
      * Abar (A')
      * Pbar (P')
      */
-    static class Nbar extends Xbar {public Nbar(N noun, XP complement) {super(noun, complement);}}
-    static class Vbar extends Xbar {public Vbar(V verb, XP complement) {super(verb, complement);}}
-    static class Abar extends Xbar {public Abar(A adj,  XP complement) {super(adj,  complement);}}
-    static class Pbar extends Xbar {public Pbar(P prep, XP complement) {super(prep, complement);}}
+    static class Nbar extends Xbar {public Nbar(N n, XP comp) {super(n, comp);}}
+    static class Vbar extends Xbar {public Vbar(V v, XP comp) {super(v, comp);}}
+    static class Abar extends Xbar {public Abar(A a, XP comp) {super(a, comp);}}
+    static class Pbar extends Xbar {public Pbar(P a, XP comp) {super(a, comp);}}
 
     /*
      * Nouns (N)
@@ -139,24 +128,43 @@ public class alysia
     {
         public String word;
 
-        public Specifier(String word) 
-        {
-            this.word = word;
-        }
-
-        public void print(String prefix)
-        {
-           System.out.println(prefix + this + " - " + word); 
-        }
-
-        public String sentence()
-        {
-            return word;
-        }
+        public Specifier(String word) {this.word = word;}
+        public void print(String prefix) {System.out.println(prefix + this + " - " + word);}
+        public String sentence() {return word;}
     }
     static class Det extends Specifier {public Det(String word) {super(word);}}
     static class Adv extends Specifier {public Adv(String word) {super(word);}}
     static class Deg extends Specifier {public Deg(String word) {super(word);}}
+
+    /*
+     * Words
+     */
+    abstract static class Word {}
+
+    static class Noun extends Word
+    {
+        public String sing, plur;
+
+        public Noun(String sing, String plur) {this.sing = sing; this.plur = plur;}
+    }
+    static class Verb extends Word
+    {
+        public String[] sing, plur;
+
+        public Verb(String[] sing, String[] plur) {this.sing = sing.clone(); this.plur = plur.clone();}
+    }
+    static class Adj extends Word
+    {
+        public String text;
+
+        public Adj(String text) {this.text = text;}
+    }
+    static class Prep extends Word
+    {
+        public String text;
+
+        public Prep(String text) {this.text = text;}
+    }
 
     /*
      * Utility functions for printing tree representation
