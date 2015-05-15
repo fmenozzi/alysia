@@ -1,0 +1,7 @@
+# Present Verbs
+#
+# 1st-sing, 2nd-sing, 3rd-sing, 1st-plur, 2nd-plur, 3rd-plur
+
+am, are, is, are, are, are
+go, go, goes, go, go, go
+think, think, thinks, think, think, think

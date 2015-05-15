@@ -1,0 +1,17 @@
+# Nouns
+#
+# singular, plural
+
+I, we
+you, you
+he, they
+she, they
+it, they
+
+cat, cats
+dog, dogs
+boy, boys
+girl, girls
+man, men
+woman, women
+book, books

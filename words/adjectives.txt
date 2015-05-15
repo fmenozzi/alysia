@@ -1,0 +1,16 @@
+# Adjectives
+
+red
+green
+blue
+
+big
+large
+small
+tiny
+
+good
+great
+bad
+terrible
+
