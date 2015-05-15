@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class alysia 
 {
     /*
@@ -139,8 +144,10 @@ public class alysia
     /*
      * Words
      */
-    abstract static class Word {}
+    abstract static class Word 
+    {
 
+    }
     static class Noun extends Word
     {
         public String sing, plur;
@@ -176,12 +183,35 @@ public class alysia
 
     public static void main(String[] args)
     {
+        /*
         XP np = new NP(new Det("The"), 
                        new Nbar(new N("house"), 
                                 null));
 
         System.out.println(np.sentence() + "\n");
-
         np.print("");
+        //*/
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("words/nouns.txt"));
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("#") || line.equals(""))
+                    continue;
+
+                String[] words = line.split("\\s*,\\s*");
+
+                for (String word : words)
+                    System.out.print(word + " ");
+                System.out.println();
+            }
+
+            br.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (IOException e) {
+            System.out.println("Error reading file");
+        }
     }
 }
