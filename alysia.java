@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.ArrayList;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
@@ -181,6 +184,37 @@ public class alysia
         return prefix + "....";
     }
 
+    /* 
+     * Get all words from file on disk
+     */
+    public static List<String[]> listOfRows(String filepath)
+    {
+        List<String[]> rows = new ArrayList<String[]>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filepath));
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("#") || line.equals(""))
+                    continue;
+
+                String[] words = line.split("\\s*,\\s*");
+
+                rows.add(words);
+            }
+
+            br.close();
+
+            return rows;
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            return null;
+        } catch (IOException e) {
+            System.out.println("Error reading file");
+            return null;
+        }
+    }
+
     public static void main(String[] args)
     {
         /*
@@ -192,26 +226,10 @@ public class alysia
         np.print("");
         //*/
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("words/nouns.txt"));
+        List<String[]> nouns = listOfRows("words/nouns.txt");
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("#") || line.equals(""))
-                    continue;
-
-                String[] words = line.split("\\s*,\\s*");
-
-                for (String word : words)
-                    System.out.print(word + " ");
-                System.out.println();
-            }
-
-            br.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-        } catch (IOException e) {
-            System.out.println("Error reading file");
-        }
+        for (String[] row : nouns)
+            for (String noun : row)
+                System.out.println(noun);
     }
 }
