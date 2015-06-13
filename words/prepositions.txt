@@ -54,7 +54,7 @@ regarding
 round
 save
 since
-than
+#than
 through
 to
 toward

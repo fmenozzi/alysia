@@ -295,8 +295,8 @@ public class alysia
 
         vp.xbar = new Vbar(null, null);
         vp.xbar.head       = new V(verbs.get(new Random().nextInt(verbs.size()))[verbIndex]);
-        vp.xbar.complement = //new Random().nextFloat() < 0.5 ? buildPP(singularDeterminer) : 
-                             //new Random().nextFloat() < 0.3 ? buildNP(singularDeterminer) :
+        vp.xbar.complement = new Random().nextFloat() < 0.5 ? buildPP(singularDeterminer) : 
+                             new Random().nextFloat() < 0.3 ? buildNP(singularDeterminer) :
                              null;
 
         return vp;

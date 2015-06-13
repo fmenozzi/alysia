@@ -33,3 +33,4 @@ paper, paper
 mirror, mirrors
 bulb, bulbs
 carpet, carpets
+idea, ideas
