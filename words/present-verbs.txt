@@ -5,3 +5,11 @@
 am, are, is, are, are, are
 go, go, goes, go, go, go
 think, think, thinks, think, think, think
+run, run, runs, run, run, run
+find, find, finds, find, find, find
+drive, drive, drives, drive, drive, drive
+fuck, fuck, fucks, fuck, fuck, fuck
+hate, hate, hates, hate, hate, hate
+love, love, loves, love, love, love
+drink, drink, drinks, drink, drink, drink
+sleep, sleep, sleeps, sleep, sleep, sleep
