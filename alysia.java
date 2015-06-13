@@ -13,7 +13,6 @@ public class alysia
      * The words we'll use
      */
     static List<String[]> dets  = listOfRows("words/det.txt");
-    //static List<String[]> degs  = listOfRows("words/deg.txt");
     static List<String[]> adjs  = listOfRows("words/adjectives.txt");
     static List<String[]> nouns = listOfRows("words/nouns.txt");
     static List<String[]> preps = listOfRows("words/prepositions.txt");
@@ -42,11 +41,13 @@ public class alysia
     {
         public Specifier specifier; 
         public Xbar      xbar;
+        public boolean   singular;
 
-        public XP(Specifier specifier, Xbar xbar) 
+        public XP(Specifier specifier, Xbar xbar, boolean singular) 
         {
             this.specifier = specifier;
             this.xbar      = xbar;
+            this.singular  = singular;
         }
 
         public void print(String prefix)
@@ -62,7 +63,7 @@ public class alysia
         public String sentence()
         {
             String specifierSentence = specifier != null ? specifier.sentence() : "";
-            String xbarSentence      = xbar != null      ? xbar.sentence()      : "";
+            String xbarSentence      = xbar      != null ? xbar.sentence()      : "";
 
             if (specifierSentence.equals("") || xbarSentence.equals(""))
                 return specifierSentence + xbarSentence;
@@ -93,7 +94,7 @@ public class alysia
 
         public String sentence()
         {
-            String headSentence       = head != null       ? head.sentence()       : "";
+            String headSentence       = head       != null ? head.sentence()       : "";
             String complementSentence = complement != null ? complement.sentence() : "";
 
             if (headSentence.equals("") || complementSentence.equals(""))
@@ -106,9 +107,9 @@ public class alysia
     {
         public String word;
 
-        public X(String word) {this.word = word;}
+        public X(String word)            {this.word = word;}
         public void print(String prefix) {System.out.println(prefix + this + " - " + word);}
-        public String sentence() {return word;}
+        public String sentence()         {return word;}
     }
 
     /*
@@ -117,10 +118,10 @@ public class alysia
      * Adjective Phrase (AP)
      * Prepositional Phrase (PP)
      */
-    static class NP extends XP {public NP(Det det, Nbar nbar) {super(det, nbar);}}
-    static class VP extends XP {public VP(Adv adv, Vbar vbar) {super(adv, vbar);}}
-    static class AP extends XP {public AP(Deg deg, Abar abar) {super(deg, abar);}}
-    static class PP extends XP {public PP(Deg deg, Pbar pbar) {super(deg, pbar);}}
+    static class NP extends XP {public NP(Det det, Nbar nbar, boolean sing) {super(det, nbar, sing);}}
+    static class VP extends XP {public VP(Adv adv, Vbar vbar, boolean sing) {super(adv, vbar, sing);}}
+    static class AP extends XP {public AP(Deg deg, Abar abar, boolean sing) {super(deg, abar, sing);}}
+    static class PP extends XP {public PP(Deg deg, Pbar pbar, boolean sing) {super(deg, pbar, sing);}}
 
     /*
      * Nbar (N')
@@ -153,9 +154,9 @@ public class alysia
     {
         public String word;
 
-        public Specifier(String word) {this.word = word;}
+        public Specifier(String word)    {this.word = word;}
         public void print(String prefix) {System.out.println(prefix + this + " - " + word);}
-        public String sentence() {return word;}
+        public String sentence()         {return word;}
     }
     static class Det extends Specifier {public Det(String word) {super(word);}}
     static class Adv extends Specifier {public Adv(String word) {super(word);}}
@@ -231,18 +232,21 @@ public class alysia
             return null;
         }
     }
-
+  
     /*
      * Construct a Noun Phrase
      */
-    public static NP buildNP()
+    public static NP buildNP(boolean singularDeterminer)
     {
         // The NP we'll eventually return
-        NP np = new NP(null, null);
+        NP np = new NP(null, null, singularDeterminer);
 
         // Select a determiner at random
-        boolean singularDeterminer = new Random().nextFloat() < 0.5;
+        if (!singularDeterminer)
+            singularDeterminer = new Random().nextFloat() < 0.5;
         np.specifier = new Det(singularDeterminer ? dets.get(0)[0] : dets.get(1)[0]);
+
+        np.singular = singularDeterminer;
 
         // Create the N' with a random, exponentially-decaying depth
         np.xbar = new Nbar(null, null);
@@ -250,29 +254,60 @@ public class alysia
         int nounIndex = new Random().nextInt(nouns.size());
         np.xbar.head = new N(singularDeterminer ? nouns.get(nounIndex)[0] : nouns.get(nounIndex)[1]);
 
-
-        np.xbar.complement = new Random().nextFloat() < 0.5 ? buildPP() : null;
+        np.xbar.complement = //new Random().nextFloat() < 0.5 ? buildPP(singularDeterminer) : 
+                             //new Random().nextFloat() < 0.3 ? buildVP(singularDeterminer) :
+                             null;
 
         return np;
     }
 
-    public static PP buildPP()
+    /*
+     * Construct a Prepositional Phrase
+     */
+    public static PP buildPP(boolean singularDeterminer)
     {
         // The PP we'll eventually return
-        PP pp = new PP(null, null);
+        PP pp = new PP(null, null, singularDeterminer);
 
         // For now, we skip the degree
         pp.specifier = null;
 
         pp.xbar = new Pbar(null, null);
         pp.xbar.head       = new P(preps.get(new Random().nextInt(preps.size()))[0]);
-        pp.xbar.complement = buildNP();
+        pp.xbar.complement = buildNP(singularDeterminer);
 
         return pp;
     }
 
+    /* 
+     * Construct a Verb Phrase
+     */
+    public static VP buildVP(boolean singularDeterminer)
+    {
+        // The VP we'll eventually build
+        VP vp = new VP(null, null, singularDeterminer);
+
+        // For now, we skip the specifier
+        vp.specifier = null;
+
+        // For now, everything is 3rd person
+        int verbIndex = singularDeterminer ? 2 : 5;
+
+        vp.xbar = new Vbar(null, null);
+        vp.xbar.head       = new V(verbs.get(new Random().nextInt(verbs.size()))[verbIndex]);
+        vp.xbar.complement = //new Random().nextFloat() < 0.5 ? buildPP(singularDeterminer) : 
+                             //new Random().nextFloat() < 0.3 ? buildNP(singularDeterminer) :
+                             null;
+
+        return vp;
+    }
+
     public static void main(String[] args)
     {
-        System.out.println(buildNP().sentence());
+        NP np = buildNP(false);
+        VP vp = buildVP(np.singular);
+
+        System.out.print(np.sentence() + " ");
+        System.out.println(vp.sentence());
     }
 }
