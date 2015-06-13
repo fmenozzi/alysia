@@ -2,11 +2,11 @@
 #
 # singular, plural
 
-I, we
-you, you
-he, they
-she, they
-it, they
+#I, we
+#you, you
+#he, they
+#she, they
+#it, they
 
 cat, cats
 dog, dogs

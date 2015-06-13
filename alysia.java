@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,6 +9,16 @@ import java.io.IOException;
 
 public class alysia 
 {
+    /*
+     * The words we'll use
+     */
+    static List<String[]> dets  = listOfRows("words/det.txt");
+    //static List<String[]> degs  = listOfRows("words/deg.txt");
+    static List<String[]> adjs  = listOfRows("words/adjectives.txt");
+    static List<String[]> nouns = listOfRows("words/nouns.txt");
+    static List<String[]> preps = listOfRows("words/prepositions.txt");
+    static List<String[]> verbs = listOfRows("words/present-verbs.txt");
+
     /*
      * Ultimately, everything is really just a node
      */
@@ -53,7 +64,10 @@ public class alysia
             String specifierSentence = specifier != null ? specifier.sentence() : "";
             String xbarSentence      = xbar != null      ? xbar.sentence()      : "";
 
-            return specifierSentence + " " + xbarSentence;
+            if (specifierSentence.equals("") || xbarSentence.equals(""))
+                return specifierSentence + xbarSentence;
+            else
+                return specifierSentence + " " + xbarSentence;
         }
     }
     abstract static class Xbar extends Node
@@ -82,7 +96,10 @@ public class alysia
             String headSentence       = head != null       ? head.sentence()       : "";
             String complementSentence = complement != null ? complement.sentence() : "";
 
-            return headSentence + " " + complementSentence;
+            if (headSentence.equals("") || complementSentence.equals(""))
+                return headSentence + complementSentence;
+            else
+                return headSentence + " " + complementSentence;
         }
     }
     abstract static class X extends Node
@@ -215,21 +232,47 @@ public class alysia
         }
     }
 
+    /*
+     * Construct a Noun Phrase
+     */
+    public static NP buildNP()
+    {
+        // The NP we'll eventually return
+        NP np = new NP(null, null);
+
+        // Select a determiner at random
+        boolean singularDeterminer = new Random().nextFloat() < 0.5;
+        np.specifier = new Det(singularDeterminer ? dets.get(0)[0] : dets.get(1)[0]);
+
+        // Create the N' with a random, exponentially-decaying depth
+        np.xbar = new Nbar(null, null);
+
+        int nounIndex = new Random().nextInt(nouns.size());
+        np.xbar.head = new N(singularDeterminer ? nouns.get(nounIndex)[0] : nouns.get(nounIndex)[1]);
+
+
+        np.xbar.complement = new Random().nextFloat() < 0.5 ? buildPP() : null;
+
+        return np;
+    }
+
+    public static PP buildPP()
+    {
+        // The PP we'll eventually return
+        PP pp = new PP(null, null);
+
+        // For now, we skip the degree
+        pp.specifier = null;
+
+        pp.xbar = new Pbar(null, null);
+        pp.xbar.head       = new P(preps.get(new Random().nextInt(preps.size()))[0]);
+        pp.xbar.complement = buildNP();
+
+        return pp;
+    }
+
     public static void main(String[] args)
     {
-        /*
-        XP np = new NP(new Det("The"), 
-                       new Nbar(new N("house"), 
-                                null));
-
-        System.out.println(np.sentence() + "\n");
-        np.print("");
-        //*/
-
-        List<String[]> nouns = listOfRows("words/nouns.txt");
-
-        for (String[] row : nouns)
-            for (String noun : row)
-                System.out.println(noun);
+        System.out.println(buildNP().sentence());
     }
 }
