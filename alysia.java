@@ -254,8 +254,8 @@ public class alysia
         int nounIndex = new Random().nextInt(nouns.size());
         np.xbar.head = new N(singularDeterminer ? nouns.get(nounIndex)[0] : nouns.get(nounIndex)[1]);
 
-        np.xbar.complement = //new Random().nextFloat() < 0.5 ? buildPP(singularDeterminer) : 
-                             //new Random().nextFloat() < 0.3 ? buildVP(singularDeterminer) :
+        np.xbar.complement = new Random().nextFloat() < 0.3 ? buildPP(singularDeterminer) : 
+                             new Random().nextFloat() < 0.1 ? buildVP(singularDeterminer) :
                              null;
 
         return np;
