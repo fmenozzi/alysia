@@ -1,4 +1,4 @@
 # alysia
 Generate random, grammatically-correct sentences
 
-Run `./compile_run_clean.sh` to generate a sentence
+Run `make` to generate a sentence
